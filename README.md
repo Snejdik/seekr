@@ -1,0 +1,2 @@
+# seekr
+Frayerska semestralni prace
