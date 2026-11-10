@@ -43,3 +43,9 @@ pyproject.toml       zavislosti a nastaveni
 ```
 
 # Podpis - Tomáš
+
+# Rozdělení týmu
+1. Miloš Bínek - Textová vrstva, CLI a GUI
+2. Jakub Šnejda - Index a persistence
+3. Tomáš Palounek - Dotazovací jazyk
+4. Dominik Padyšák - Ranking a aktualizace indexu
