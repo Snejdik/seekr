@@ -41,3 +41,5 @@ semestralni_prace/   zdrojovy kod
 tests/               testy
 pyproject.toml       zavislosti a nastaveni
 ```
+
+# Podpis - Tomáš
