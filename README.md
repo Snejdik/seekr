@@ -42,8 +42,6 @@ tests/               testy
 pyproject.toml       zavislosti a nastaveni
 ```
 
-# Podpis - Tomáš
-
 # Rozdělení týmu
 1. Miloš Bínek - Textová vrstva, CLI a GUI
 2. Jakub Šnejda - Index a persistence
