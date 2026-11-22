@@ -1,4 +1,4 @@
-# Cíl souboru: jak vypadají data a chyby, které se předávají mezi části projektu např. text.py
+"""Sdílené datové třídy a vlastní výjimky projektu."""
 
 # IMPORTY (CLI zachytává jen SearchEngineError)
 from __future__ import annotations
