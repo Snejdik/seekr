@@ -11,12 +11,15 @@ from __future__ import annotations
 
 import hashlib
 import re
+import unicodedata
+from collections.abc import Iterator
 from pathlib import Path
 
 from .models import (
     BinaryFileError,
     EmptyFileError,
     FileInfo,
+    Token,
     UnreadableFileError,
 )
 
@@ -80,3 +83,50 @@ def fingerprint(path: Path | str) -> FileInfo:
 
 # posix() převede cestu na obyčejný text a převede \ na / - hodí se, protože cesta pak vypadá stejně na všech OS
 # mtime = čas poslední úpravy obsahu souboru
+
+
+# NORMALIZACE A TOKENIZACE
+def normalize_term(word: str) -> str:
+    """Malá písmena a odstranění diakritiky"""
+    decomposed = unicodedata.normalize(
+        "NFD", word.lower()
+    )  # lower převede všechna písmena proměnné word na malá
+    # unicodedata.normalize(...) - sjednocuje způsob, jakým jsou znaky uložené v paměti, NFD = Normalization Form D - Canonical Decompositon
+    # znaky s diakritikou se rozdělí na základní znak a kombinující diakritické znaménko
+    return "".join(
+        c for c in decomposed if not unicodedata.combining(c)
+    )  # propojí základní znaky do jednoho slova
+
+
+def iter_tokens(
+    text: str,
+) -> Iterator[
+    tuple[Token, int, int]
+]:  # ty 2 int jsou indexy - počáteční a koncový index
+    """Generátor (token, start, konec) s offsety do původního textu."""
+    position = 0  # počítadlo pořadí platných slov
+    for m in _WORD.finditer(
+        text
+    ):  # podle regulární výrazu _WORD prohledá všechna slova
+        term = normalize_term(m.group())
+        if term:  # "Zbyl tu neprázdný řetězec?"
+            yield (
+                Token(term, position),
+                m.start(),
+                m.end(),
+            )  # z funkce udělá generátor, díky yield vrací výsledky postupně
+            position += 1
+
+
+# m.end() - index znaku za koncem slova v původním textu
+
+
+def tokenize(
+    text: str,
+) -> list[Token]:  # wrapper pro iter_tokens, zkrátka vyhodí indexy
+    """Tokeny s pozicemi 0, 1, 2, ... (pro index)."""
+    return [tok for tok, _, _ in iter_tokens(text)]
+
+
+# _ tu reprezentuje "ignorování" hodnoty a první hodnotu uloží do proměnné tok
+# tok for tok - list comprehension = posbírá generované obj. tok a zabalí je do 1 seznamu.
